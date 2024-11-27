@@ -123,6 +123,8 @@ BOOL CSketchPadApp::InitInstance()
 		return FALSE;
 
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
+	m_pMainWnd->SetWindowTextW(_T("交互式绘图系统"));
+
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 	return TRUE;

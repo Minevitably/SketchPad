@@ -27,6 +27,37 @@ BEGIN_MESSAGE_MAP(CSketchPadView, CView)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
+	ON_COMMAND(ID_CLEAR_SKETCH_PAD, &CSketchPadView::OnClearSketchPad)
+	ON_COMMAND(ID_BASIC_DDALINE, &CSketchPadView::OnBasicDdaline)
+	ON_COMMAND(ID_BASIC_BRELINE, &CSketchPadView::OnBasicBreline)
+	ON_COMMAND(ID_BASIC_BRELINE_PRO, &CSketchPadView::OnBasicBrelinePro)
+	ON_COMMAND(ID_BASIC_SYSLINE, &CSketchPadView::OnBasicSysline)
+	ON_COMMAND(ID_BASIC_CIRCLE, &CSketchPadView::OnBasicCircle)
+	ON_COMMAND(ID_BASIC_ELLIPSE, &CSketchPadView::OnBasicEllipse)
+	ON_COMMAND(ID_BASIC_OCTAGON, &CSketchPadView::OnBasicOctagon)
+	ON_COMMAND(ID_TRANS_BASIC_ZOOM, &CSketchPadView::OnTransBasicZoom)
+	ON_COMMAND(ID_TRANS_BASIC_SHEAR, &CSketchPadView::OnTransBasicShear)
+	ON_COMMAND(ID_TRANS_BASIC_SHIFT, &CSketchPadView::OnTransBasicShift)
+	ON_COMMAND(ID_TRANS_BASIC_SYMMETRIC_BY_LINE, &CSketchPadView::OnTransBasicSymmetricByLine)
+	ON_COMMAND(ID_TRANS_BASIC_ROTATE, &CSketchPadView::OnTransBasicRotate)
+	ON_COMMAND(ID_TRANS_COMPOSITE_SHIFT, &CSketchPadView::OnTransCompositeShift)
+	ON_COMMAND(ID_TRANS_COMPOSITE_ZOOM_SHEAR, &CSketchPadView::OnTransCompositeZoomShear)
+	ON_COMMAND(ID_TRANS_ROTATE_BY_POINT, &CSketchPadView::OnTransRotateByPoint)
+	ON_COMMAND(ID_TRANS_SYMMETRIC_BY_LINE, &CSketchPadView::OnTransSymmetricByLine)
+	ON_COMMAND(ID_CURVE_FOURTH_ORDER_BEZIER, &CSketchPadView::OnCurveFourthOrderBezier)
+	ON_COMMAND(ID_CURVE_CUBIC_BSPLINE, &CSketchPadView::OnCurveCubicBspline)
+	ON_COMMAND(ID_CURVE_CUBIC_BEZIER_SPLICE, &CSketchPadView::OnCurveCubicBezierSplice)
+	ON_COMMAND(ID_CLIP_LINE, &CSketchPadView::OnClipLine)
+	ON_COMMAND(ID_CLIP_POLYGON, &CSketchPadView::OnClipPolygon)
+	ON_COMMAND(ID_FILL_BY_COLOR, &CSketchPadView::OnFillByColor)
+	ON_COMMAND(ID_THREED_DESIGN_SPHERE, &CSketchPadView::OnThreedDesignSphere)
+	ON_COMMAND(ID_THREED_DESIGN_CUBE, &CSketchPadView::OnThreedDesignCube)
+	ON_COMMAND(ID_THREED_SHOW_FRONTVIEW, &CSketchPadView::OnThreedShowFrontview)
+	ON_COMMAND(ID_THREED_SHOW_SIDEVIEW, &CSketchPadView::OnThreedShowSideview)
+	ON_COMMAND(ID_THREED_SHOW_TOPVIEW, &CSketchPadView::OnThreedShowTopview)
+	ON_COMMAND(ID_FRACTAL_CAYLEY_TREE, &CSketchPadView::OnFractalCayleyTree)
+	ON_COMMAND(ID_FRACTAL_DRAGON_CURVE, &CSketchPadView::OnFractalDragonCurve)
+	ON_COMMAND(ID_FRACTAL_KOCK_CURVE, &CSketchPadView::OnFractalKockCurve)
 END_MESSAGE_MAP()
 
 // CSketchPadView 构造/析构
@@ -51,14 +82,23 @@ BOOL CSketchPadView::PreCreateWindow(CREATESTRUCT& cs)
 
 // CSketchPadView 绘图
 
-void CSketchPadView::OnDraw(CDC* /*pDC*/)
+void CSketchPadView::OnDraw(CDC* pDC)
 {
 	CSketchPadDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-
 	// TODO: 在此处为本机数据添加绘制代码
+	AxisUtil::SetCartesian(this, pDC); // 设置为标准笛卡尔坐标系
+	AxisUtil::DrawAxis(this, pDC); 	// 绘制坐标轴
+
+	for (Graphic * pGraphic : m_graphics) {
+		pGraphic->Draw(pDC);
+	}
+
+
+	pDC->MoveTo(CPoint(0,0));
+	pDC->LineTo(CPoint(250, 50));
 }
 
 
@@ -103,3 +143,219 @@ CSketchPadDoc* CSketchPadView::GetDocument() const // 非调试版本是内联�
 
 
 // CSketchPadView 消息处理程序
+
+// 清空画板
+void CSketchPadView::OnClearSketchPad()
+{
+	// TODO: 在此添加命令处理程序代码
+	Invalidate();
+	AfxMessageBox(_T("画板已清空"));
+}
+
+// DDA绘制线型为虚线的直线
+void CSketchPadView::OnBasicDdaline()
+{
+	std::vector<CPoint> points;
+	CPoint start = CPoint(0, 0);
+	CPoint end = CPoint(50, 250);
+	points.push_back(start);
+	points.push_back(end);
+	// line必须使用内存分配，否则会被内存回收机制带走
+	Line *line = new Line(points, DDA_LINE);
+	m_graphics.push_back(line);
+	AfxMessageBox(_T("DDA绘制线型为虚线的直线"));
+	// 更新画板
+	Invalidate();
+}
+
+// Bresenham绘制线宽为2的直线
+void CSketchPadView::OnBasicBreline()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 改进的Bresenham绘制红色直线
+void CSketchPadView::OnBasicBrelinePro()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 系统库函数绘制直线
+void CSketchPadView::OnBasicSysline()
+{
+	// TODO: 在此添加命令处理程序代码
+	std::vector<CPoint> points;
+	CPoint start = CPoint(0, 0);
+	CPoint end = CPoint(200, 100);
+	points.push_back(start);
+	points.push_back(end);
+	// line必须使用内存分配，否则会被内存回收机制带走
+	Line* line = new Line(points, SYS_LINE);
+	m_graphics.push_back(line);
+	AfxMessageBox(_T("系统库函数绘制直线"));
+	Invalidate();
+}
+
+// Bresenham绘制圆心不在原点的圆
+void CSketchPadView::OnBasicCircle()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// Bresenham绘制椭圆
+void CSketchPadView::OnBasicEllipse()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 八边形绘制
+void CSketchPadView::OnBasicOctagon()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+// 平移变换
+void CSketchPadView::OnTransBasicShift()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 整体比例变换
+void CSketchPadView::OnTransBasicZoom()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 沿y方向的错切变换
+void CSketchPadView::OnTransBasicShear()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+
+// 关于直线 y = -x 的对称变换
+void CSketchPadView::OnTransBasicSymmetricByLine()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+
+// 顺时针旋转60°的旋转变换
+void CSketchPadView::OnTransBasicRotate()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 复合平移变换
+void CSketchPadView::OnTransCompositeShift()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 先比例变换再错切变换
+void CSketchPadView::OnTransCompositeZoomShear()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+// 相对点（5, 10）的旋转变换
+void CSketchPadView::OnTransRotateByPoint()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 关于直线 y = x 的反射变换
+void CSketchPadView::OnTransSymmetricByLine()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+
+// 四次Bezier曲线绘制
+void CSketchPadView::OnCurveFourthOrderBezier()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 三次B样条曲线绘制
+void CSketchPadView::OnCurveCubicBspline()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 3段三次Bezier曲线的拼接
+void CSketchPadView::OnCurveCubicBezierSplice()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 直线的裁剪
+void CSketchPadView::OnClipLine()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 多边形裁剪
+void CSketchPadView::OnClipPolygon()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 图形填充
+// 要求可以改变填充颜色，不可直接调用系统函数
+void CSketchPadView::OnFillByColor()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 设计三维球体
+void CSketchPadView::OnThreedDesignSphere()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 设计三维立方体
+void CSketchPadView::OnThreedDesignCube()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 显示前视图
+void CSketchPadView::OnThreedShowFrontview()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 显示侧视图
+void CSketchPadView::OnThreedShowSideview()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 显示俯视图
+void CSketchPadView::OnThreedShowTopview()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 绘制Cayley树
+void CSketchPadView::OnFractalCayleyTree()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 绘制龙状曲线
+void CSketchPadView::OnFractalDragonCurve()
+{
+	// TODO: 在此添加命令处理程序代码
+}
+
+// 绘制Kock雪花曲线
+void CSketchPadView::OnFractalKockCurve()
+{
+	// TODO: 在此添加命令处理程序代码
+}

@@ -13,48 +13,99 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\include">
+      <UniqueIdentifier>{361b09bc-27f5-4bde-9c09-936d641cfb55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\source">
+      <UniqueIdentifier>{4a445280-be18-4914-884a-496cce6d3988}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\view">
+      <UniqueIdentifier>{1de3bfce-ff76-4f49-a517-505629faca31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\view">
+      <UniqueIdentifier>{d1f9ae9c-d0a7-4581-9988-767e93cb2789}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\graphics">
+      <UniqueIdentifier>{24a10be4-4036-4600-8e59-44365a97dd1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\graphics\two_dimensional_graphics">
+      <UniqueIdentifier>{af689290-690a-4558-bcc1-838e354eb117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\graphics\three_dimensional_graphics">
+      <UniqueIdentifier>{20c3dd87-0c29-45a2-aa02-405f81d558ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\graphics">
+      <UniqueIdentifier>{158785b2-5aa2-458c-82e7-1d03d400193c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\graphics\three_dimensional_graphics">
+      <UniqueIdentifier>{34f12797-a5a0-4c00-ba94-d4dedaa5b5cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\graphics\two_dimensional_graphics">
+      <UniqueIdentifier>{c084b8fa-f7e0-42ed-8de8-91978e80878a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\utils">
+      <UniqueIdentifier>{15d997dc-8777-415d-ab74-f71fd74697b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\utils">
+      <UniqueIdentifier>{38602309-e51e-4cc5-8568-f7cfd49bdaad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SketchPad.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="framework.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\include</Filter>
     </ClInclude>
     <ClInclude Include="MainFrm.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SketchPadDoc.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SketchPadView.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\include</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\include</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件\include</Filter>
+    </ClInclude>
+    <ClInclude Include="SketchPad.h">
+      <Filter>头文件\include</Filter>
+    </ClInclude>
+    <ClInclude Include="SketchPadDoc.h">
+      <Filter>头文件\include</Filter>
+    </ClInclude>
+    <ClInclude Include="SketchPadView.h">
+      <Filter>头文件\view</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件\include</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisUtil.h">
+      <Filter>头文件\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic.h">
+      <Filter>头文件\graphics\two_dimensional_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>头文件\graphics\two_dimensional_graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SketchPad.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="MainFrm.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SketchPadDoc.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SketchPadView.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\source</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\source</Filter>
+    </ClCompile>
+    <ClCompile Include="SketchPad.cpp">
+      <Filter>源文件\source</Filter>
+    </ClCompile>
+    <ClCompile Include="SketchPadDoc.cpp">
+      <Filter>源文件\source</Filter>
+    </ClCompile>
+    <ClCompile Include="SketchPadView.cpp">
+      <Filter>源文件\view</Filter>
+    </ClCompile>
+    <ClCompile Include="AxisUtil.cpp">
+      <Filter>源文件\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>源文件\graphics\two_dimensional_graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
