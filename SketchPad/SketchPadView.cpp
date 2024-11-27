@@ -197,7 +197,7 @@ void CSketchPadView::OnBasicBrelinePro()
 	// line必须使用内存分配，否则会被内存回收机制带走
 	Line* line = new Line(points, BRE_LINE_PRO);
 	m_graphics.push_back(line);
-	AfxMessageBox(_T("改进的Bresenham绘制红色直线"));
+	//AfxMessageBox(_T("改进的Bresenham绘制红色直线"));
 	// 更新画板
 	Invalidate();
 

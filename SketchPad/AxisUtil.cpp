@@ -32,23 +32,30 @@ void AxisUtil::DrawAxis(CView* pCView, CDC* pDC) {
 	CPen pen(PS_SOLID, 3, color);
 	CPen* pOldPen = pDC->SelectObject(&pen); // ±£´æ¾ÉµÄ»­±Ê
 
+	int margin = 50;
+	CPoint xAxisStart = CPoint(-center.x + margin, 0);
+	CPoint xAxisEnd = CPoint(center.x - margin, 0);
+	CPoint yAxisStart = CPoint(0, -center.y + 50);
+	CPoint yAxisEnd = CPoint(0, center.y - 50);
+
+
 	// »æÖÆ X Öá
-	pDC->MoveTo(-center.x, 0);
-	pDC->LineTo(center.x, 0);
+	pDC->MoveTo(xAxisStart);
+	pDC->LineTo(xAxisEnd);
 
 	// »æÖÆ X Öá¼ýÍ·
-	pDC->MoveTo(center.x - 10, 5);
-	pDC->LineTo(center.x, 0);
-	pDC->LineTo(center.x - 10, -5);
+	pDC->MoveTo(xAxisEnd.x - 10, 5);
+	pDC->LineTo(xAxisEnd.x, 0);
+	pDC->LineTo(xAxisEnd.x - 10, -5);
 
 	// »æÖÆ Y Öá
-	pDC->MoveTo(0, -center.y);
-	pDC->LineTo(0, center.y);
+	pDC->MoveTo(yAxisStart);
+	pDC->LineTo(yAxisEnd);
 
 	// »æÖÆ Y Öá¼ýÍ·
-	pDC->MoveTo(5, center.y - 10);
-	pDC->LineTo(0, center.y);
-	pDC->LineTo(-5, center.y - 10);
+	pDC->MoveTo(5, yAxisEnd.y - 10);
+	pDC->LineTo(0, yAxisEnd.y);
+	pDC->LineTo(-5, yAxisEnd.y - 10);
 
 	// »Ö¸´¾ÉµÄ»­±Ê
 	pDC->SelectObject(pOldPen);
