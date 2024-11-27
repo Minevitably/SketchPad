@@ -157,7 +157,6 @@ void CSketchPadView::OnClearSketchPad()
 	Invalidate();
 	AfxMessageBox(_T("画板已清空"));
 }
-
 // DDA绘制线型为虚线的直线
 void CSketchPadView::OnBasicDdaline()
 {
@@ -173,7 +172,6 @@ void CSketchPadView::OnBasicDdaline()
 	// 更新画板
 	Invalidate();
 }
-
 // Bresenham绘制线宽为2的直线
 void CSketchPadView::OnBasicBreline()
 {
@@ -190,7 +188,6 @@ void CSketchPadView::OnBasicBreline()
 	// 更新画板
 	Invalidate();
 }
-
 // 改进的Bresenham绘制红色直线
 void CSketchPadView::OnBasicBrelinePro()
 {
@@ -208,7 +205,6 @@ void CSketchPadView::OnBasicBrelinePro()
 	Invalidate();
 
 }
-
 // 系统库函数绘制直线
 void CSketchPadView::OnBasicSysline()
 {
@@ -224,7 +220,6 @@ void CSketchPadView::OnBasicSysline()
 	//AfxMessageBox(_T("系统库函数绘制直线"));
 	Invalidate();
 }
-
 // Bresenham绘制圆心不在原点的圆
 void CSketchPadView::OnBasicCircle()
 {
@@ -238,7 +233,6 @@ void CSketchPadView::OnBasicCircle()
 	//AfxMessageBox(_T("Bresenham绘制圆心不在原点的圆"));
 	Invalidate();
 }
-
 // Bresenham绘制椭圆
 void CSketchPadView::OnBasicEllipse()
 {
@@ -255,7 +249,6 @@ void CSketchPadView::OnBasicEllipse()
 	Invalidate();
 
 }
-
 // 八边形的绘制
 void CSketchPadView::OnBasicOctagon()
 {
@@ -269,7 +262,6 @@ void CSketchPadView::OnBasicOctagon()
 	//AfxMessageBox(_T("八边形的绘制"));
 	Invalidate();
 }
-
 // 六边形的绘制
 void CSketchPadView::OnTransHexagon()
 {
@@ -286,7 +278,6 @@ void CSketchPadView::OnTransHexagon()
 	//AfxMessageBox(_T("六边形的绘制"));
 	Invalidate();
 }
-
 // 删除变换后的图形
 void CSketchPadView::RemoveNewHexagon()
 {
@@ -508,91 +499,125 @@ void CSketchPadView::OnTransSymmetricByLine()
 	AfxMessageBox(_T("关于直线 y = x 的反射变换"));
 	Invalidate();
 }
-
-
 // 四次Bezier曲线绘制
 void CSketchPadView::OnCurveFourthOrderBezier()
 {
-	// TODO: 在此添加命令处理程序代码
-}
+	int t = -35;
+	int y = 125;
+	std::vector<CPoint> points;
+	for (int i = 0; i < 13; i++) {
+		if ((i + 2) % 4 == 0) {
+			t = -t;
+		}
+		points.push_back(CPoint(i * 25, y));
+		y += t;
+	}
+	points[2].y = 85;
+	points[6].y = 165;
+	points[10].y = 85;
 
+	FourthOrderBezier* bezier = new FourthOrderBezier(points);
+	m_graphics.push_back(bezier);
+	AfxMessageBox(_T("四次Bezier曲线绘制"));
+	// 更新画板
+	Invalidate();
+
+}
 // 三次B样条曲线绘制
 void CSketchPadView::OnCurveCubicBspline()
 {
-	// TODO: 在此添加命令处理程序代码
-}
+	int t = -35;
+	int y = -100;
+	std::vector<CPoint> points;
+	for (int i = 0; i < 13; i++) {
+		if ((i + 2) % 4 == 0) {
+			t = -t;
+		}
+		points.push_back(CPoint(i * 25, y));
+		y += t;
+	}
+	points[2].y = -140;
+	points[6].y = -60;
+	points[10].y = -140;
 
+	CubicBspline* bezier = new CubicBspline(points);
+	m_graphics.push_back(bezier);
+	AfxMessageBox(_T("三次B样条曲线绘制"));
+	// 更新画板
+	Invalidate();
+
+}
 // 3段三次Bezier曲线的拼接
 void CSketchPadView::OnCurveCubicBezierSplice()
 {
-	// TODO: 在此添加命令处理程序代码
+	std::vector<CPoint> points = {
+	{ -300, 125 }, { -275, 80 }, { -225, 165 }, { -200, 125 },   // 第一段
+	{ -200, 125 }, { -175, 80 }, { -125, 165 }, { -100, 125 },     // 第二段
+	{ -100, 125 }, { -75, 80 }, { -25, 165 }, { 0, 125 }    // 第三段
+	};
+	CubicBezierSplice* bezier = new CubicBezierSplice(points);
+	m_graphics.push_back(bezier);
+	AfxMessageBox(_T("3段三次Bezier曲线的拼接"));
+	// 更新画板
+	Invalidate();
 }
-
 // 直线的裁剪
 void CSketchPadView::OnClipLine()
 {
 	// TODO: 在此添加命令处理程序代码
 }
-
 // 多边形裁剪
 void CSketchPadView::OnClipPolygon()
 {
 	// TODO: 在此添加命令处理程序代码
 }
-
 // 图形填充
 // 要求可以改变填充颜色，不可直接调用系统函数
 void CSketchPadView::OnFillByColor()
 {
 	// TODO: 在此添加命令处理程序代码
 }
-
 // 设计三维球体
 void CSketchPadView::OnThreedDesignSphere()
 {
 	// TODO: 在此添加命令处理程序代码
 }
-
 // 设计三维立方体
 void CSketchPadView::OnThreedDesignCube()
 {
 	// TODO: 在此添加命令处理程序代码
 }
-
 // 显示前视图
 void CSketchPadView::OnThreedShowFrontview()
 {
 	// TODO: 在此添加命令处理程序代码
 }
-
 // 显示侧视图
 void CSketchPadView::OnThreedShowSideview()
 {
 	// TODO: 在此添加命令处理程序代码
 }
-
 // 显示俯视图
 void CSketchPadView::OnThreedShowTopview()
 {
 	// TODO: 在此添加命令处理程序代码
 }
-
 // 绘制Cayley树
 void CSketchPadView::OnFractalCayleyTree()
 {
 	// TODO: 在此添加命令处理程序代码
 }
-
 // 绘制龙状曲线
 void CSketchPadView::OnFractalDragonCurve()
 {
 	// TODO: 在此添加命令处理程序代码
-}
 
+}
 // 绘制Kock雪花曲线
 void CSketchPadView::OnFractalKockCurve()
 {
 	// TODO: 在此添加命令处理程序代码
+
 }
 
 

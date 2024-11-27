@@ -61,6 +61,15 @@
     <Filter Include="头文件\graphics\two_dimensional_graphics\composite">
       <UniqueIdentifier>{c3e7aba0-6b6c-4704-84a3-f2e0380088e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\graphics\two_dimensional_graphics\base">
+      <UniqueIdentifier>{73177903-d54d-4172-bfc7-d84c4242f5c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\graphics\two_dimensional_graphics\curve">
+      <UniqueIdentifier>{6ebdeced-b0d7-43fa-b3b7-36c52661dd8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\graphics\two_dimensional_graphics\curve">
+      <UniqueIdentifier>{2087fa5e-3382-4605-9af4-0da908ff2e8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -96,9 +105,6 @@
     <ClInclude Include="Ellipse.h">
       <Filter>头文件\graphics\two_dimensional_graphics\basic</Filter>
     </ClInclude>
-    <ClInclude Include="Graphic.h">
-      <Filter>头文件\graphics\two_dimensional_graphics\basic</Filter>
-    </ClInclude>
     <ClInclude Include="Line.h">
       <Filter>头文件\graphics\two_dimensional_graphics\basic</Filter>
     </ClInclude>
@@ -110,6 +116,18 @@
     </ClInclude>
     <ClInclude Include="TransformUtil.h">
       <Filter>头文件\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic.h">
+      <Filter>头文件\graphics\two_dimensional_graphics\base</Filter>
+    </ClInclude>
+    <ClInclude Include="FourthOrderBezier.h">
+      <Filter>头文件\graphics\two_dimensional_graphics\curve</Filter>
+    </ClInclude>
+    <ClInclude Include="CubicBspline.h">
+      <Filter>头文件\graphics\two_dimensional_graphics\curve</Filter>
+    </ClInclude>
+    <ClInclude Include="CubicBezierSplice.h">
+      <Filter>头文件\graphics\two_dimensional_graphics\curve</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +166,15 @@
     </ClCompile>
     <ClCompile Include="TransformUtil.cpp">
       <Filter>源文件\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="FourthOrderBezier.cpp">
+      <Filter>源文件\graphics\two_dimensional_graphics\curve</Filter>
+    </ClCompile>
+    <ClCompile Include="CubicBspline.cpp">
+      <Filter>源文件\graphics\two_dimensional_graphics\curve</Filter>
+    </ClCompile>
+    <ClCompile Include="CubicBezierSplice.cpp">
+      <Filter>源文件\graphics\two_dimensional_graphics\curve</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

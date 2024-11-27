@@ -13,8 +13,14 @@
 #include "Circle.h"
 #include "Ellipse.h"
 #include "Octagon.h"
+
 #include "Hexagon.h"
 #include "TransformUtil.h"
+
+#include "FourthOrderBezier.h"
+#include "CubicBspline.h"
+#include "CubicBezierSplice.h"
+
 
 class CSketchPadView : public CView
 {
