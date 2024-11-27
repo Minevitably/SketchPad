@@ -13,7 +13,7 @@
 #include "Circle.h"
 #include "Ellipse.h"
 #include "Octagon.h"
-
+#include "Hexagon.h"
 
 class CSketchPadView : public CView
 {
@@ -85,6 +85,7 @@ public:
 	afx_msg void OnFractalCayleyTree();
 	afx_msg void OnFractalDragonCurve();
 	afx_msg void OnFractalKockCurve();
+	afx_msg void OnTransHexagon();
 };
 
 #ifndef _DEBUG  // SketchPadView.cpp 中的调试版本

@@ -49,6 +49,18 @@
     <Filter Include="源文件\utils">
       <UniqueIdentifier>{38602309-e51e-4cc5-8568-f7cfd49bdaad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\graphics\two_dimensional_graphics\basic">
+      <UniqueIdentifier>{2fb3fb8b-d2b0-4f82-a58d-9b0cc50dc363}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\graphics\two_dimensional_graphics\composite">
+      <UniqueIdentifier>{691ac68e-ad9b-4a89-af8d-93953aee7515}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\graphics\two_dimensional_graphics\basic">
+      <UniqueIdentifier>{2d2d5204-1c7c-48c3-805d-81ae3d2dd5f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\graphics\two_dimensional_graphics\composite">
+      <UniqueIdentifier>{c3e7aba0-6b6c-4704-84a3-f2e0380088e5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -78,20 +90,23 @@
     <ClInclude Include="AxisUtil.h">
       <Filter>头文件\utils</Filter>
     </ClInclude>
-    <ClInclude Include="Graphic.h">
-      <Filter>头文件\graphics\two_dimensional_graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Line.h">
-      <Filter>头文件\graphics\two_dimensional_graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Circle.h">
-      <Filter>头文件\graphics\two_dimensional_graphics</Filter>
+      <Filter>头文件\graphics\two_dimensional_graphics\basic</Filter>
     </ClInclude>
     <ClInclude Include="Ellipse.h">
-      <Filter>头文件\graphics\two_dimensional_graphics</Filter>
+      <Filter>头文件\graphics\two_dimensional_graphics\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphic.h">
+      <Filter>头文件\graphics\two_dimensional_graphics\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>头文件\graphics\two_dimensional_graphics\basic</Filter>
     </ClInclude>
     <ClInclude Include="Octagon.h">
-      <Filter>头文件\graphics\two_dimensional_graphics</Filter>
+      <Filter>头文件\graphics\two_dimensional_graphics\basic</Filter>
+    </ClInclude>
+    <ClInclude Include="Hexagon.h">
+      <Filter>头文件\graphics\two_dimensional_graphics\composite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -113,17 +128,20 @@
     <ClCompile Include="AxisUtil.cpp">
       <Filter>源文件\utils</Filter>
     </ClCompile>
-    <ClCompile Include="Line.cpp">
-      <Filter>源文件\graphics\two_dimensional_graphics</Filter>
+    <ClCompile Include="Hexagon.cpp">
+      <Filter>源文件\graphics\two_dimensional_graphics\composite</Filter>
     </ClCompile>
     <ClCompile Include="Circle.cpp">
-      <Filter>源文件\graphics\two_dimensional_graphics</Filter>
+      <Filter>源文件\graphics\two_dimensional_graphics\basic</Filter>
     </ClCompile>
     <ClCompile Include="Ellipse.cpp">
-      <Filter>源文件\graphics\two_dimensional_graphics</Filter>
+      <Filter>源文件\graphics\two_dimensional_graphics\basic</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>源文件\graphics\two_dimensional_graphics\basic</Filter>
     </ClCompile>
     <ClCompile Include="Octagon.cpp">
-      <Filter>源文件\graphics\two_dimensional_graphics</Filter>
+      <Filter>源文件\graphics\two_dimensional_graphics\basic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

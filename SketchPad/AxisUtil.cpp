@@ -28,8 +28,8 @@ void AxisUtil::DrawAxis(CView* pCView, CDC* pDC) {
 	CPoint center = CPoint(cRect.Width() / 2, cRect.Height() / 2);
 
 	// ÉèÖÃ»­±Ê
-	COLORREF color = RGB(255, 0, 0);
-	CPen pen(PS_SOLID, 3, color);
+	COLORREF color = RGB(0, 0, 0);
+	CPen pen(PS_SOLID, 2, color);
 	CPen* pOldPen = pDC->SelectObject(&pen); // ±£´æ¾ÉµÄ»­±Ê
 
 	int margin = 50;

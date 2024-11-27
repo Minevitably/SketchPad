@@ -82,13 +82,16 @@
 #define ID_32844                        32844
 #define ID_CLEAR_SKETCH_PAD             32845
 #define ID_32848                        32848
+#define ID_32849                        32849
+#define ID_TRANS                        32850
+#define ID_TRANS_HEXAGON                32851
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        310
-#define _APS_NEXT_COMMAND_VALUE         32849
+#define _APS_NEXT_COMMAND_VALUE         32852
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

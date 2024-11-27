@@ -58,6 +58,7 @@ BEGIN_MESSAGE_MAP(CSketchPadView, CView)
 	ON_COMMAND(ID_FRACTAL_CAYLEY_TREE, &CSketchPadView::OnFractalCayleyTree)
 	ON_COMMAND(ID_FRACTAL_DRAGON_CURVE, &CSketchPadView::OnFractalDragonCurve)
 	ON_COMMAND(ID_FRACTAL_KOCK_CURVE, &CSketchPadView::OnFractalKockCurve)
+	ON_COMMAND(ID_TRANS_HEXAGON, &CSketchPadView::OnTransHexagon)
 END_MESSAGE_MAP()
 
 // CSketchPadView 构造/析构
@@ -250,19 +251,36 @@ void CSketchPadView::OnBasicEllipse()
 
 }
 
-// 八边形绘制
+// 八边形的绘制
 void CSketchPadView::OnBasicOctagon()
 {
 	std::vector<CPoint> points;
 	CPoint center = CPoint(125, -100);
 	int radius = 50;
 	points.push_back(center);
-	Octagon* circle = new Octagon(points, radius);
-	m_graphics.push_back(circle);
+	Octagon* octagon = new Octagon(points, radius);
+	m_graphics.push_back(octagon);
 	// TODO: 在此添加命令处理程序代码
-	//AfxMessageBox(_T("八边形绘制"));
+	//AfxMessageBox(_T("八边形的绘制"));
 	Invalidate();
 
+}
+
+// 六边形的绘制
+void CSketchPadView::OnTransHexagon()
+{
+	// TODO: 在此添加命令处理程序代码
+	std::vector<CPoint> points;
+	CPoint center = CPoint(250, 100);
+	int radius = 50;
+	// 使用一个bool值标记原图
+	bool raw = true;
+	points.push_back(center);
+	Hexagon* hexagon = new Hexagon(points, radius, raw);
+	m_graphics.push_back(hexagon);
+	// TODO: 在此添加命令处理程序代码
+	//AfxMessageBox(_T("六边形的绘制"));
+	Invalidate();
 }
 
 
@@ -410,3 +428,5 @@ void CSketchPadView::OnFractalKockCurve()
 {
 	// TODO: 在此添加命令处理程序代码
 }
+
+
