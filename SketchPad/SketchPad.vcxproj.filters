@@ -70,6 +70,12 @@
     <Filter Include="源文件\graphics\two_dimensional_graphics\curve">
       <UniqueIdentifier>{2087fa5e-3382-4605-9af4-0da908ff2e8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\graphics\two_dimensional_graphics\clip">
+      <UniqueIdentifier>{520e6447-49b4-4f29-a554-83bb4a6fabfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\graphics\two_dimensional_graphics\clip">
+      <UniqueIdentifier>{45fe7229-1411-4753-b638-2a510fe403b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -129,6 +135,9 @@
     <ClInclude Include="CubicBezierSplice.h">
       <Filter>头文件\graphics\two_dimensional_graphics\curve</Filter>
     </ClInclude>
+    <ClInclude Include="Polygon.h">
+      <Filter>头文件\graphics\two_dimensional_graphics\clip</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">
@@ -175,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="CubicBezierSplice.cpp">
       <Filter>源文件\graphics\two_dimensional_graphics\curve</Filter>
+    </ClCompile>
+    <ClCompile Include="Polygon.cpp">
+      <Filter>源文件\graphics\two_dimensional_graphics\clip</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

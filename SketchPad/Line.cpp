@@ -80,52 +80,58 @@ void Line::DrawBasicDdaline(CDC* pDC) const
 	}
 
 }
-
 // Bresenham绘制线宽为2的直线
 void Line::DrawBasicBreline(CDC* pDC) const
 {
-	// 定义起点和终点
+	// 获取起点和终点
 	CPoint start = m_points[0];
 	CPoint end = m_points[1];
 
-	// 计算线段的增量
-	int dx = end.x - start.x;
-	int dy = end.y - start.y;
-
-	// 计算绝对值
-	int abs_dx = std::abs(dx);
-	int abs_dy = std::abs(dy);
-
-	// 计算步数
-	int steps = Max(abs_dx, abs_dy);
-
 	// 计算增量
-	float xIncrement = static_cast<float>(dx) / steps;
-	float yIncrement = static_cast<float>(dy) / steps;
+	int dx = abs(end.x - start.x);
+	int dy = abs(end.y - start.y);
 
-	// 当前点的坐标
-	float x = start.x;
-	float y = start.y;
+	// 判断主轴方向
+	bool isSteep = (dy > dx); // 判断是否以 y 为主轴
 
-	// 线宽设置为 2，所以我们需要在主线的两侧绘制像素
-	for (int i = 0; i <= steps; i++)
-	{
-		// 四舍五入当前点
-		int currentX = static_cast<int>(round(x));
-		int currentY = static_cast<int>(round(y));
+	// 如果以 y 为主轴，交换 x 和 y 的处理
+	if (isSteep) {
+		std::swap(start.x, start.y);
+		std::swap(end.x, end.y);
+		std::swap(dx, dy);
+	}
 
-		// 绘制线宽为 2 的直线
-		// 在当前点的上下各绘制一个像素
-		pDC->SetPixel(currentX, currentY, RGB(0, 0, 0)); // 主线
-		pDC->SetPixel(currentX, currentY + 1, RGB(0, 0, 0)); // 上方
-		pDC->SetPixel(currentX, currentY - 1, RGB(0, 0, 0)); // 下方
+	// 确定绘制方向
+	int xStep = (start.x < end.x) ? 1 : -1;
+	int yStep = (start.y < end.y) ? 1 : -1;
 
-		// 增加增量
-		x += xIncrement;
-		y += yIncrement;
+	// 初始化变量
+	int d = 2 * dy - dx; // 初始误差
+	int x = start.x, y = start.y;
+
+	// 循环绘制
+	for (int i = 0; i <= dx; i++) {
+		// 绘制像素（如果主轴是 y，需交换回原始坐标）
+		if (isSteep) {
+			pDC->SetPixel(y, x - 1, RGB(0, 0, 0));
+			pDC->SetPixel(y, x, RGB(0, 0, 0));
+			pDC->SetPixel(y, x + 1, RGB(0, 0, 0));
+		}
+		else {
+			pDC->SetPixel(x, y - 1, RGB(0, 0, 0));
+			pDC->SetPixel(x, y, RGB(0, 0, 0));
+			pDC->SetPixel(x, y + 1, RGB(0, 0, 0));
+		}
+
+		// 判断误差并调整
+		if (d >= 0) {
+			y += yStep;        // 调整次方向
+			d -= 2 * dx;       // 减去 dx
+		}
+		d += 2 * dy;           // 增加 dy
+		x += xStep;            // 增加主方向
 	}
 }
-
 // 改进的Bresenham绘制红色直线
 void Line::DrawBasicBrelinePro(CDC* pDC) const
 {
@@ -170,7 +176,6 @@ void Line::DrawBasicBrelinePro(CDC* pDC) const
 		}
 	}
 }
-
 // 系统库函数绘制直线
 void Line::DrawBasicSysline(CDC* pDC) const
 {

@@ -22,6 +22,26 @@
 #include "CubicBezierSplice.h"
 
 
+#include "Polygon.h"
+#include <afxwin.h>
+
+// 定义裁剪窗口的边界
+const int LEFT = 100;
+const int RIGHT = 300;
+const int BOTTOM = 100;
+const int TOP = 300;
+
+// 定义方向位编码
+enum OutCode {
+	INSIDE = 0,  // 0000
+	LEFT_BIT = 1, // 0001
+	RIGHT_BIT = 2, // 0010
+	BOTTOM_BIT = 4, // 0100
+	TOP_BIT = 8  // 1000
+};
+
+
+
 class CSketchPadView : public CView
 {
 private:

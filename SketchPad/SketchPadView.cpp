@@ -561,16 +561,149 @@ void CSketchPadView::OnCurveCubicBezierSplice()
 	// 更新画板
 	Invalidate();
 }
-// 直线的裁剪
+
+
+// 计算点的区域编码
+int ComputeOutCode(int x, int y) {
+	int code = INSIDE;
+
+	if (x < LEFT)
+		code |= LEFT_BIT;
+	else if (x > RIGHT)
+		code |= RIGHT_BIT;
+	if (y < BOTTOM)
+		code |= BOTTOM_BIT;
+	else if (y > TOP)
+		code |= TOP_BIT;
+
+	return code;
+}
+
+// Cohen-Sutherland 裁剪算法
+bool CohenSutherlandLineClip(int& x0, int& y0, int& x1, int& y1) {
+	int outCode0 = ComputeOutCode(x0, y0);
+	int outCode1 = ComputeOutCode(x1, y1);
+
+	bool accept = false;
+
+	while (true) {
+		if (!(outCode0 | outCode1)) {
+			// 两个端点都在裁剪窗口内
+			accept = true;
+			break;
+		}
+		else if (outCode0 & outCode1) {
+			// 两个端点都在裁剪窗口外且在同一区域，完全不可见
+			break;
+		}
+		else {
+			// 需要裁剪
+			int outCodeOut = outCode0 ? outCode0 : outCode1;
+
+			int x, y;
+
+			if (outCodeOut & TOP_BIT) { // 超出上边界
+				x = x0 + (x1 - x0) * (TOP - y0) / (y1 - y0);
+				y = TOP;
+			}
+			else if (outCodeOut & BOTTOM_BIT) { // 超出下边界
+				x = x0 + (x1 - x0) * (BOTTOM - y0) / (y1 - y0);
+				y = BOTTOM;
+			}
+			else if (outCodeOut & RIGHT_BIT) { // 超出右边界
+				y = y0 + (y1 - y0) * (RIGHT - x0) / (x1 - x0);
+				x = RIGHT;
+			}
+			else if (outCodeOut & LEFT_BIT) { // 超出左边界
+				y = y0 + (y1 - y0) * (LEFT - x0) / (x1 - x0);
+				x = LEFT;
+			}
+
+			if (outCodeOut == outCode0) {
+				x0 = x;
+				y0 = y;
+				outCode0 = ComputeOutCode(x0, y0);
+			}
+			else {
+				x1 = x;
+				y1 = y;
+				outCode1 = ComputeOutCode(x1, y1);
+			}
+		}
+	}
+
+	return accept;
+}
+
+// 在视图中添加命令处理程序
 void CSketchPadView::OnClipLine()
 {
-	// TODO: 在此添加命令处理程序代码
+	CClientDC dc(this);
+
+	// 定义裁剪窗口
+	CPen rectPen(PS_DASH, 1, RGB(255, 0, 0)); // 红色虚线
+	CPen* pOldPen = dc.SelectObject(&rectPen);
+	dc.Rectangle(LEFT, TOP, RIGHT, BOTTOM);
+	dc.SelectObject(pOldPen);
+
+	// 定义需要裁剪的直线（可以替换为动态输入或其他数据来源）
+	int x0 = 50, y0 = 150; // 起点
+	int x1 = 350, y1 = 200; // 终点
+
+	// 原始直线（裁剪前）
+	CPen linePen(PS_SOLID, 1, RGB(0, 0, 255)); // 蓝色直线
+	pOldPen = dc.SelectObject(&linePen);
+	dc.MoveTo(x0, y0);
+	dc.LineTo(x1, y1);
+	dc.SelectObject(pOldPen);
+
+	// 使用 Cohen-Sutherland 算法裁剪
+	if (CohenSutherlandLineClip(x0, y0, x1, y1)) {
+		// 裁剪后直线
+		CPen clippedLinePen(PS_SOLID, 1, RGB(0, 255, 0)); // 绿色直线
+		pOldPen = dc.SelectObject(&clippedLinePen);
+		dc.MoveTo(x0, y0);
+		dc.LineTo(x1, y1);
+		dc.SelectObject(pOldPen);
+	}
+	else {
+		AfxMessageBox(_T("直线在裁剪窗口外部，无法显示！"));
+	}
 }
-// 多边形裁剪
-void CSketchPadView::OnClipPolygon()
-{
-	// TODO: 在此添加命令处理程序代码
+
+// 视图中调用多边形裁剪
+void CSketchPadView::OnClipPolygon() {
+	CClientDC dc(this);
+
+	// 定义裁剪窗口
+	CRect clipRect(100, 100, 300, 300);
+
+	// 绘制裁剪窗口
+	CPen rectPen(PS_DASH, 1, RGB(255, 0, 0)); // 红色虚线
+	CPen* pOldPen = dc.SelectObject(&rectPen);
+	dc.Rectangle(clipRect);
+	dc.SelectObject(pOldPen);
+
+	// 定义原始多边形
+	std::vector<CPoint> points = {
+		CPoint(50, 50),
+		CPoint(250, 50),
+		CPoint(250,200),
+		CPoint(180, 250),
+		CPoint(50, 200)
+	};
+	MyGraphics::Polygon polygon(points);
+
+	// 绘制原始多边形
+	polygon.Draw(&dc, RGB(0, 0, 255)); // 蓝色原始多边形
+
+	// 裁剪多边形
+	polygon.Clip(clipRect);
+
+	// 绘制裁剪后的多边形
+	polygon.Draw(&dc, RGB(0, 255, 0)); // 绿色裁剪后多边形
 }
+
 // 图形填充
 // 要求可以改变填充颜色，不可直接调用系统函数
 void CSketchPadView::OnFillByColor()
