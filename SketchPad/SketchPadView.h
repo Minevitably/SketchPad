@@ -14,6 +14,7 @@
 #include "Ellipse.h"
 #include "Octagon.h"
 #include "Hexagon.h"
+#include "TransformUtil.h"
 
 class CSketchPadView : public CView
 {
@@ -86,6 +87,8 @@ public:
 	afx_msg void OnFractalDragonCurve();
 	afx_msg void OnFractalKockCurve();
 	afx_msg void OnTransHexagon();
+	// 删除变换后的图形
+	void RemoveNewHexagon();
 };
 
 #ifndef _DEBUG  // SketchPadView.cpp 中的调试版本

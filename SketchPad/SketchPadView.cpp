@@ -148,7 +148,12 @@ CSketchPadDoc* CSketchPadView::GetDocument() const // 非调试版本是内联�
 // 清空画板
 void CSketchPadView::OnClearSketchPad()
 {
+	int size = m_graphics.size();
 	// TODO: 在此添加命令处理程序代码
+	for (int i = 0; i < size; i++) {
+		delete m_graphics[i];
+	}
+	m_graphics.clear();
 	Invalidate();
 	AfxMessageBox(_T("画板已清空"));
 }
@@ -263,7 +268,6 @@ void CSketchPadView::OnBasicOctagon()
 	// TODO: 在此添加命令处理程序代码
 	//AfxMessageBox(_T("八边形的绘制"));
 	Invalidate();
-
 }
 
 // 六边形的绘制
@@ -283,64 +287,226 @@ void CSketchPadView::OnTransHexagon()
 	Invalidate();
 }
 
+// 删除变换后的图形
+void CSketchPadView::RemoveNewHexagon()
+{
+	// TODO: 在此添加命令处理程序代码
+	for (int i = 0; i < m_graphics.size(); ) { // 注意这里的 i 不自增
+		Graphic* pGraphic = m_graphics[i];
 
+		// 使用 dynamic_cast 进行类型检查
+		if (Hexagon* hexagon = dynamic_cast<Hexagon*>(pGraphic)) {
+			if (!hexagon->GetRaw()) {
+				// 通过 erase-remove 习惯模式删除元素
+				m_graphics.erase(m_graphics.begin() + i);
+				// 注意：这里不增加 i，因为我们已经移除了当前元素
+				continue; // 继续检查下一个元素
+			}
+		}
+		i++; // 仅在未移除元素时自增 i
+	}
+}
 // 平移变换
 void CSketchPadView::OnTransBasicShift()
 {
-	// TODO: 在此添加命令处理程序代码
-}
+	RemoveNewHexagon();
+	// 创建一个新的图形用于变换
+	std::vector<CPoint> points;
+	CPoint center = CPoint(250, 100);
+	int radius = 50;
+	// 使用一个bool值标记原图
+	bool raw = false;
+	points.push_back(center);
+	// 变换
+	Hexagon* newHexagon = new Hexagon(points, radius, raw);
+	std::vector<CPoint> newPoints = newHexagon->GetPoints();
 
+	// 向x负方向平移500个单位
+	newHexagon->SetPoints(TransformUtil::Translate(newPoints, -500, 0));
+	m_graphics.push_back(newHexagon);
+	AfxMessageBox(_T("向x负方向平移500个单位"));
+	Invalidate();
+}
 // 整体比例变换
 void CSketchPadView::OnTransBasicZoom()
 {
-	// TODO: 在此添加命令处理程序代码
-}
+	RemoveNewHexagon();
+	// 创建一个新的图形用于变换
+	std::vector<CPoint> points;
+	CPoint center = CPoint(250, 100);
+	int radius = 50;
+	// 使用一个bool值标记原图
+	bool raw = false;
+	points.push_back(center);
+	// 变换
+	Hexagon* newHexagon = new Hexagon(points, radius, raw);
+	std::vector<CPoint> newPoints = newHexagon->GetPoints();
 
+	// 整体放大1.2倍
+	newHexagon->SetPoints(TransformUtil::Scale(newPoints, 1.2f, 1.2f));
+	m_graphics.push_back(newHexagon);
+	AfxMessageBox(_T("整体放大1.2倍"));
+	Invalidate();
+}
 // 沿y方向的错切变换
 void CSketchPadView::OnTransBasicShear()
 {
 	// TODO: 在此添加命令处理程序代码
+	RemoveNewHexagon();
+	// 创建一个新的图形用于变换
+	std::vector<CPoint> points;
+	CPoint center = CPoint(250, 100);
+	int radius = 50;
+	// 使用一个bool值标记原图
+	bool raw = false;
+	points.push_back(center);
+	// 变换
+	Hexagon* newHexagon = new Hexagon(points, radius, raw);
+	std::vector<CPoint> newPoints = newHexagon->GetPoints();
+
+	// 沿y方向的错切变换，错切因子为0.3f
+	newHexagon->SetPoints(TransformUtil::Shear(newPoints, 0.3f));
+	m_graphics.push_back(newHexagon);
+	AfxMessageBox(_T("沿y方向的错切变换，错切因子为0.3f"));
+	Invalidate();
 }
-
-
-
 // 关于直线 y = -x 的对称变换
 void CSketchPadView::OnTransBasicSymmetricByLine()
 {
 	// TODO: 在此添加命令处理程序代码
+	RemoveNewHexagon();
+	// 创建一个新的图形用于变换
+	std::vector<CPoint> points;
+	CPoint center = CPoint(250, 100);
+	int radius = 50;
+	// 使用一个bool值标记原图
+	bool raw = false;
+	points.push_back(center);
+	// 变换
+	Hexagon* newHexagon = new Hexagon(points, radius, raw);
+	std::vector<CPoint> newPoints = newHexagon->GetPoints();
+
+	// 关于直线 y = -x 的对称变换
+	newHexagon->SetPoints(TransformUtil::Reflect(newPoints));
+	m_graphics.push_back(newHexagon);
+	AfxMessageBox(_T("关于直线 y = -x 的对称变换"));
+	Invalidate();
 }
-
-
-
 // 顺时针旋转60°的旋转变换
 void CSketchPadView::OnTransBasicRotate()
 {
 	// TODO: 在此添加命令处理程序代码
-}
+		// TODO: 在此添加命令处理程序代码
+	RemoveNewHexagon();
+	// 创建一个新的图形用于变换
+	std::vector<CPoint> points;
+	CPoint center = CPoint(250, 100);
+	int radius = 50;
+	// 使用一个bool值标记原图
+	bool raw = false;
+	points.push_back(center);
+	// 变换
+	Hexagon* newHexagon = new Hexagon(points, radius, raw);
+	std::vector<CPoint> newPoints = newHexagon->GetPoints();
 
+	// 绕原点顺时针旋转60°的旋转变换
+	newHexagon->SetPoints(TransformUtil::Rotate(newPoints, 60.0f));
+	m_graphics.push_back(newHexagon);
+	AfxMessageBox(_T("绕原点顺时针旋转60°的旋转变换"));
+	Invalidate();
+
+}
 // 复合平移变换
 void CSketchPadView::OnTransCompositeShift()
 {
 	// TODO: 在此添加命令处理程序代码
-}
+	// 先沿y轴平移-200单位，再向x轴平移-200单位
+	RemoveNewHexagon();
+	// 创建一个新的图形用于变换
+	std::vector<CPoint> points;
+	CPoint center = CPoint(250, 100);
+	int radius = 50;
+	// 使用一个bool值标记原图
+	bool raw = false;
+	points.push_back(center);
+	// 变换
+	Hexagon* newHexagon = new Hexagon(points, radius, raw);
+	std::vector<CPoint> newPoints = newHexagon->GetPoints();
 
+	// 先沿y轴平移-200单位，再向x轴平移-200单位
+	newHexagon->SetPoints(TransformUtil::Translate(newPoints, -200, -200));
+	m_graphics.push_back(newHexagon);
+	AfxMessageBox(_T("先沿y轴平移-200单位，再向x轴平移-200单位"));
+	Invalidate();
+}
 // 先比例变换再错切变换
 void CSketchPadView::OnTransCompositeZoomShear()
 {
 	// TODO: 在此添加命令处理程序代码
+	// 先沿y轴平移-200单位，再向x轴平移-200单位
+	RemoveNewHexagon();
+	// 创建一个新的图形用于变换
+	std::vector<CPoint> points;
+	CPoint center = CPoint(250, 100);
+	int radius = 50;
+	// 使用一个bool值标记原图
+	bool raw = false;
+	points.push_back(center);
+	// 变换
+	Hexagon* newHexagon = new Hexagon(points, radius, raw);
+	std::vector<CPoint> newPoints = newHexagon->GetPoints();
+
+	// 先比例变换，比例因子（1.2f, 1.2f），再错切变换，错切因子0.3f
+	newHexagon->SetPoints(TransformUtil::ScaleAndShear(newPoints, 1.2f, 1.2f, 0.3f));
+	m_graphics.push_back(newHexagon);
+	AfxMessageBox(_T("先比例变换，比例因子（1.2f, 1.2f），再错切变换，错切因子0.3f"));
+	Invalidate();
 }
-
-
 // 相对点（5, 10）的旋转变换
 void CSketchPadView::OnTransRotateByPoint()
 {
 	// TODO: 在此添加命令处理程序代码
-}
+	// 先沿y轴平移-200单位，再向x轴平移-200单位
+	RemoveNewHexagon();
+	// 创建一个新的图形用于变换
+	std::vector<CPoint> points;
+	CPoint center = CPoint(250, 100);
+	int radius = 50;
+	// 使用一个bool值标记原图
+	bool raw = false;
+	points.push_back(center);
+	// 变换
+	Hexagon* newHexagon = new Hexagon(points, radius, raw);
+	std::vector<CPoint> newPoints = newHexagon->GetPoints();
 
+	// 相对点（5, 10）顺时针旋转30°
+	newHexagon->SetPoints(TransformUtil::RotateByPoint(newPoints, -30.0f, 5, 10));
+	m_graphics.push_back(newHexagon);
+	AfxMessageBox(_T("相对点（5, 10）顺时针旋转30°"));
+	Invalidate();
+}
 // 关于直线 y = x 的反射变换
 void CSketchPadView::OnTransSymmetricByLine()
 {
 	// TODO: 在此添加命令处理程序代码
+	// 先沿y轴平移-200单位，再向x轴平移-200单位
+	RemoveNewHexagon();
+	// 创建一个新的图形用于变换
+	std::vector<CPoint> points;
+	CPoint center = CPoint(250, 100);
+	int radius = 50;
+	// 使用一个bool值标记原图
+	bool raw = false;
+	points.push_back(center);
+	// 变换
+	Hexagon* newHexagon = new Hexagon(points, radius, raw);
+	std::vector<CPoint> newPoints = newHexagon->GetPoints();
+
+	// 关于直线 y = x 的反射变换
+	newHexagon->SetPoints(TransformUtil::ReflectByYX(newPoints));
+	m_graphics.push_back(newHexagon);
+	AfxMessageBox(_T("关于直线 y = x 的反射变换"));
+	Invalidate();
 }
 
 
@@ -428,5 +594,7 @@ void CSketchPadView::OnFractalKockCurve()
 {
 	// TODO: 在此添加命令处理程序代码
 }
+
+
 
 
