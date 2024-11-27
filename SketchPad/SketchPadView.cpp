@@ -163,7 +163,7 @@ void CSketchPadView::OnBasicDdaline()
 	// line必须使用内存分配，否则会被内存回收机制带走
 	Line *line = new Line(points, DDA_LINE);
 	m_graphics.push_back(line);
-	AfxMessageBox(_T("DDA绘制线型为虚线的直线"));
+	//AfxMessageBox(_T("DDA绘制线型为虚线的直线"));
 	// 更新画板
 	Invalidate();
 }
@@ -172,12 +172,35 @@ void CSketchPadView::OnBasicDdaline()
 void CSketchPadView::OnBasicBreline()
 {
 	// TODO: 在此添加命令处理程序代码
+	std::vector<CPoint> points;
+	CPoint start = CPoint(0, 0);
+	CPoint end = CPoint(100, 200);
+	points.push_back(start);
+	points.push_back(end);
+	// line必须使用内存分配，否则会被内存回收机制带走
+	Line* line = new Line(points, BRE_LINE);
+	m_graphics.push_back(line);
+	//AfxMessageBox(_T("Bresenham绘制线宽为2的直线"));
+	// 更新画板
+	Invalidate();
 }
 
 // 改进的Bresenham绘制红色直线
 void CSketchPadView::OnBasicBrelinePro()
 {
 	// TODO: 在此添加命令处理程序代码
+	std::vector<CPoint> points;
+	CPoint start = CPoint(0, 0);
+	CPoint end = CPoint(150, 150);
+	points.push_back(start);
+	points.push_back(end);
+	// line必须使用内存分配，否则会被内存回收机制带走
+	Line* line = new Line(points, BRE_LINE_PRO);
+	m_graphics.push_back(line);
+	AfxMessageBox(_T("改进的Bresenham绘制红色直线"));
+	// 更新画板
+	Invalidate();
+
 }
 
 // 系统库函数绘制直线
@@ -192,7 +215,7 @@ void CSketchPadView::OnBasicSysline()
 	// line必须使用内存分配，否则会被内存回收机制带走
 	Line* line = new Line(points, SYS_LINE);
 	m_graphics.push_back(line);
-	AfxMessageBox(_T("系统库函数绘制直线"));
+	//AfxMessageBox(_T("系统库函数绘制直线"));
 	Invalidate();
 }
 

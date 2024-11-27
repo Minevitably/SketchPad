@@ -84,13 +84,91 @@ void Line::DrawBasicDdaline(CDC* pDC) const
 // Bresenham绘制线宽为2的直线
 void Line::DrawBasicBreline(CDC* pDC) const
 {
-	// TODO: 在此添加命令处理程序代码
+	// 定义起点和终点
+	CPoint start = m_points[0];
+	CPoint end = m_points[1];
+
+	// 计算线段的增量
+	int dx = end.x - start.x;
+	int dy = end.y - start.y;
+
+	// 计算绝对值
+	int abs_dx = std::abs(dx);
+	int abs_dy = std::abs(dy);
+
+	// 计算步数
+	int steps = Max(abs_dx, abs_dy);
+
+	// 计算增量
+	float xIncrement = static_cast<float>(dx) / steps;
+	float yIncrement = static_cast<float>(dy) / steps;
+
+	// 当前点的坐标
+	float x = start.x;
+	float y = start.y;
+
+	// 线宽设置为 2，所以我们需要在主线的两侧绘制像素
+	for (int i = 0; i <= steps; i++)
+	{
+		// 四舍五入当前点
+		int currentX = static_cast<int>(round(x));
+		int currentY = static_cast<int>(round(y));
+
+		// 绘制线宽为 2 的直线
+		// 在当前点的上下各绘制一个像素
+		pDC->SetPixel(currentX, currentY, RGB(0, 0, 0)); // 主线
+		pDC->SetPixel(currentX, currentY + 1, RGB(0, 0, 0)); // 上方
+		pDC->SetPixel(currentX, currentY - 1, RGB(0, 0, 0)); // 下方
+
+		// 增加增量
+		x += xIncrement;
+		y += yIncrement;
+	}
 }
 
 // 改进的Bresenham绘制红色直线
 void Line::DrawBasicBrelinePro(CDC* pDC) const
 {
-	// TODO: 在此添加命令处理程序代码
+	// 定义起点和终点
+	CPoint start = m_points[0];
+	CPoint end = m_points[1];
+
+	// 计算增量
+	int dx = end.x - start.x;
+	int dy = end.y - start.y;
+
+	int abs_dx = std::abs(dx);
+	int abs_dy = std::abs(dy);
+
+	// 确定绘制方向
+	int sx = (dx >= 0) ? 1 : -1; // x方向的步进
+	int sy = (dy >= 0) ? 1 : -1; // y方向的步进
+
+	// 初始化误差
+	int err = abs_dx - abs_dy;
+
+	// 绘制线段
+	while (true)
+	{
+		// 绘制当前点
+		pDC->SetPixel(start.x, start.y, RGB(255, 0, 0)); // 红色像素
+
+		// 如果到达终点，停止绘制
+		if (start.x == end.x && start.y == end.y) break;
+
+		// 计算误差
+		int e2 = err * 2;
+
+		// 选择水平或垂直移动
+		if (e2 > -abs_dy) {
+			err -= abs_dy;
+			start.x += sx;
+		}
+		if (e2 < abs_dx) {
+			err += abs_dx;
+			start.y += sy;
+		}
+	}
 }
 
 // 系统库函数绘制直线
