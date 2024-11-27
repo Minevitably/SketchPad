@@ -10,7 +10,9 @@
 
 #include "Graphic.h"
 #include "Line.h"
-
+#include "Circle.h"
+#include "Ellipse.h"
+#include "Octagon.h"
 
 
 class CSketchPadView : public CView

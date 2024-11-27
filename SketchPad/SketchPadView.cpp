@@ -222,19 +222,47 @@ void CSketchPadView::OnBasicSysline()
 // Bresenham绘制圆心不在原点的圆
 void CSketchPadView::OnBasicCircle()
 {
+	std::vector<CPoint> points;
+	CPoint center = CPoint(-150, 150);
+	int radius = 50;
+	points.push_back(center);
+	Circle* circle = new Circle(points, radius);
+	m_graphics.push_back(circle);
 	// TODO: 在此添加命令处理程序代码
+	//AfxMessageBox(_T("Bresenham绘制圆心不在原点的圆"));
+	Invalidate();
 }
 
 // Bresenham绘制椭圆
 void CSketchPadView::OnBasicEllipse()
 {
+	std::vector<CPoint> points;
+	CPoint center = CPoint(-150, -100);
+	int a = 70;
+	int b = 50;
+	points.push_back(center);
+	// 这里和库函数产生了冲突
+	MyGraphics::Ellipse* ellipse = new MyGraphics::Ellipse(points, a, b);
+	m_graphics.push_back(ellipse);
 	// TODO: 在此添加命令处理程序代码
+	//AfxMessageBox(_T("Bresenham绘制椭圆"));
+	Invalidate();
+
 }
 
 // 八边形绘制
 void CSketchPadView::OnBasicOctagon()
 {
+	std::vector<CPoint> points;
+	CPoint center = CPoint(125, -100);
+	int radius = 50;
+	points.push_back(center);
+	Octagon* circle = new Octagon(points, radius);
+	m_graphics.push_back(circle);
 	// TODO: 在此添加命令处理程序代码
+	//AfxMessageBox(_T("八边形绘制"));
+	Invalidate();
+
 }
 
 
