@@ -138,6 +138,15 @@
     <ClInclude Include="Polygon.h">
       <Filter>头文件\graphics\two_dimensional_graphics\clip</Filter>
     </ClInclude>
+    <ClInclude Include="TCube.h">
+      <Filter>头文件\graphics\three_dimensional_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TGraphic.h">
+      <Filter>头文件\graphics\three_dimensional_graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TSphere.h">
+      <Filter>头文件\graphics\three_dimensional_graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp">

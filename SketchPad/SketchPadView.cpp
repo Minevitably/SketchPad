@@ -56,13 +56,14 @@ BEGIN_MESSAGE_MAP(CSketchPadView, CView)
 	ON_COMMAND(ID_THREED_SHOW_SIDEVIEW, &CSketchPadView::OnThreedShowSideview)
 	ON_COMMAND(ID_THREED_SHOW_TOPVIEW, &CSketchPadView::OnThreedShowTopview)
 	ON_COMMAND(ID_FRACTAL_CAYLEY_TREE, &CSketchPadView::OnFractalCayleyTree)
-
 	ON_COMMAND(ID_FRACTAL_KOCK_CURVE, &CSketchPadView::OnFractalKockCurve)
 	ON_COMMAND(ID_TRANS_HEXAGON, &CSketchPadView::OnTransHexagon)
-
 	ON_COMMAND(ID_FILL_BY_RED, &CSketchPadView::OnFillByRed)
 	ON_COMMAND(ID_FILL_BY_GREEN, &CSketchPadView::OnFillByGreen)
 	ON_COMMAND(ID_FILL_BY_BLUE, &CSketchPadView::OnFillByBlue)
+	ON_COMMAND(ID_THREED_AXIS, &CSketchPadView::OnThreedAxis)
+	ON_WM_CREATE()
+
 END_MESSAGE_MAP()
 
 // CSketchPadView 构造/析构
@@ -84,11 +85,156 @@ BOOL CSketchPadView::PreCreateWindow(CREATESTRUCT& cs)
 
 	return CView::PreCreateWindow(cs);
 }
+BOOL CSketchPadView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CView::OnCreate(lpCreateStruct) == -1)
+		return -1;
+	CDC* pDC = GetDC();
+	PIXELFORMATDESCRIPTOR pfd;
+	ZeroMemory(&pfd, sizeof(pfd));
+	pfd.nSize = sizeof(pfd);
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = 32;
+	pfd.iLayerType = PFD_MAIN_PLANE;
+	int pixelFormat = ChoosePixelFormat(pDC->m_hDC, &pfd);
+	SetPixelFormat(pDC->m_hDC, pixelFormat, &pfd);
+	ReleaseDC(pDC);
+	return 0;
+}
+
+
+void CSketchPadView::InitOpenGL()
+{
+	CRect clientRect;
+	this->GetClientRect(&clientRect);
+	CDC* pDC = GetDC();
+	m_hGLRC = wglCreateContext(pDC->m_hDC);
+	wglMakeCurrent(pDC->m_hDC, m_hGLRC);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glViewport(0, 0, clientRect.Width(), clientRect.Height());
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(60.0, (double)clientRect.Width() / (double)clientRect.Height(), 0.1, 100.0);
+	glMatrixMode(GL_MODELVIEW);
+
+	// 释放设备上下文
+	ReleaseDC(pDC);
+	m_isGLInit = true;
+
+}
+
+void CSketchPadView::OnDestroy()
+{
+	wglMakeCurrent(NULL, NULL);
+	if (m_hGLRC)
+	{
+		wglDeleteContext(m_hGLRC);
+		m_hGLRC = NULL;
+	}
+	CView::OnDestroy();
+}
+
+void glPosition(double oh, double aspectRatio) {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	oh = 1.0;
+	glOrtho(-oh * aspectRatio, oh * aspectRatio, -oh, oh, -10.0, 10.0);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
+void CSketchPadView::ChangeView(Mode mode)
+{
+	float eyeX, eyeY, eyeZ;
+	CRect clientRect;
+	double oh = 0;
+	this->GetClientRect(&clientRect);
+	double aspectRatio = (double)clientRect.Width() / (double)clientRect.Height();
+	switch (mode) {
+	case V_FRONT:
+		glPosition(oh, aspectRatio);
+		eyeX = 0.0f;
+		eyeY = 0.0f;
+		eyeZ = 5.0f;
+		gluLookAt(eyeX, eyeY, eyeZ,
+			0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f);
+		break;
+
+	case V_SIDE:
+		glPosition(oh, aspectRatio);
+		eyeX = 5.0f;  		
+		eyeY = 0.0f;
+		eyeZ = 0.0f;  		
+		gluLookAt(eyeX, eyeY, eyeZ, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);  		
+		break;
+
+	case V_TOP:
+		glPosition(oh, aspectRatio);
+		eyeX = 0.0f;
+		eyeY = 5.0f;
+		eyeZ = 0.0f;
+		gluLookAt(eyeX, eyeY, eyeZ, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f);
+		break;
+	default:
+		CRect clientRect;
+		this->GetClientRect(&clientRect);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective(45.0, (double)clientRect.Width() / (double)clientRect.Height(), 0.1, 100.0);
+		eyeX = 5.0f * cos(M_PI / 4);
+		eyeY = 5.0f * sin(M_PI / 4);
+		eyeZ = 1.0f;
+		gluLookAt(eyeX, eyeY, eyeZ,
+			0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f);
+		break;
+	}
+}
+
+
+void DrawCoordinateSystem()
+{
+	glBegin(GL_LINES);
+	// X
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.3f, 0.0f, 0.0f);
+	// Y
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.3f, 0.0f);
+	// Z
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.3f);
+	glEnd();
+}
+
 
 // CSketchPadView 绘图
 
 void CSketchPadView::OnDraw(CDC* pDC)
 {
+	if (m_isGLInit) {
+		wglMakeCurrent(pDC->m_hDC, m_hGLRC);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		ChangeView(m_view);
+		for (TGraphic* shape : tGraphics) {
+			shape->Draw();
+		}
+		DrawCoordinateSystem();
+		SwapBuffers(pDC->m_hDC);
+		return;
+	}
+
 	CSketchPadDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
@@ -97,12 +243,12 @@ void CSketchPadView::OnDraw(CDC* pDC)
 	AxisUtil::SetCartesian(this, pDC); // 设置为标准笛卡尔坐标系
 	AxisUtil::DrawAxis(this, pDC); 	// 绘制坐标轴
 
-	for (Graphic * pGraphic : m_graphics) {
+	for (Graphic* pGraphic : m_graphics) {
 		pGraphic->Draw(pDC);
 	}
 
 
-	pDC->MoveTo(CPoint(0,0));
+	pDC->MoveTo(CPoint(0, 0));
 	pDC->LineTo(CPoint(250, 50));
 }
 
@@ -170,7 +316,7 @@ void CSketchPadView::OnBasicDdaline()
 	points.push_back(start);
 	points.push_back(end);
 	// line必须使用内存分配，否则会被内存回收机制带走
-	Line *line = new Line(points, DDA_LINE);
+	Line* line = new Line(points, DDA_LINE);
 	m_graphics.push_back(line);
 	//AfxMessageBox(_T("DDA绘制线型为虚线的直线"));
 	// 更新画板
@@ -776,27 +922,34 @@ void CSketchPadView::OnFillByBlue()
 // 设计三维球体
 void CSketchPadView::OnThreedDesignSphere()
 {
-	// TODO: 在此添加命令处理程序代码
+	tGraphics.push_back(new TSphere(0.1f, 0.3f, 0.0f, 0.2f, 1.0f, 0.0f, 0.0f));
+	Invalidate();
+
+
 }
 // 设计三维立方体
 void CSketchPadView::OnThreedDesignCube()
 {
-	// TODO: 在此添加命令处理程序代码
+	tGraphics.push_back(new TCube(0.1f, 0.2f, 0.2f, 0.0f, 1.0f, 1.0f, 0.0f));
+	Invalidate();
 }
 // 显示前视图
 void CSketchPadView::OnThreedShowFrontview()
 {
-	// TODO: 在此添加命令处理程序代码
+	m_view = V_FRONT;
+	Invalidate();
 }
 // 显示侧视图
 void CSketchPadView::OnThreedShowSideview()
 {
-	// TODO: 在此添加命令处理程序代码
+	m_view = V_SIDE;
+	Invalidate();
 }
 // 显示俯视图
 void CSketchPadView::OnThreedShowTopview()
 {
-	// TODO: 在此添加命令处理程序代码
+	m_view = V_TOP;
+	Invalidate();
 }
 
 void CSketchPadView::OnFractalCayleyTree() {
@@ -886,4 +1039,14 @@ void CSketchPadView::DrawKockCurve(CDC* pDC, int x1, int y1, int x2, int y2, int
 	DrawKockCurve(pDC, x3, y3, x5, y5, depth - 1);  // 第2个小边
 	DrawKockCurve(pDC, x5, y5, x4, y4, depth - 1);  // 第3个小边
 	DrawKockCurve(pDC, x4, y4, x2, y2, depth - 1);  // 第4个小边
+}
+
+
+void CSketchPadView::OnThreedAxis()
+{
+	tGraphics.push_back(new TCube(0.1f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f));
+	tGraphics.push_back(new TSphere(0.1f, 0.0f, 0.0f, 0.2f, 0.0f, 0.6f, 0.5f)); // 绿色球体
+	InitOpenGL(); // 在此调用
+	Invalidate();
+
 }

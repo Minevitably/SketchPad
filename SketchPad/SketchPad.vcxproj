@@ -76,6 +76,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <ExecutablePath>D:\MIY\OpenGL\include\GLFW\include;D:\MIY\OpenGL\include\GLAD\include;$(ExecutablePath)</ExecutablePath>
+    <LibraryPath>D:\MIY\OpenGL\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -96,6 +98,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -184,7 +187,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AxisUtil.h" />
+    <ClInclude Include="TCube.h" />
     <ClInclude Include="Circle.h" />
+    <ClInclude Include="TGraphic.h" />
+    <ClInclude Include="TSphere.h" />
     <ClInclude Include="CubicBezierSplice.h" />
     <ClInclude Include="CubicBspline.h" />
     <ClInclude Include="Ellipse.h" />

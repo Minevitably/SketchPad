@@ -25,6 +25,13 @@
 #include "Polygon.h"
 #include <afxwin.h>
 
+#include <GL/gl.h>
+#include <GL/glu.h>
+
+#include "TGraphic.h"
+#include "TCube.h"
+#include "TSphere.h"
+
 #define M_PI 3.1415926
 
 
@@ -42,17 +49,30 @@ enum OutCode {
 	BOTTOM_BIT = 4, // 0100
 	TOP_BIT = 8  // 1000
 };
-
+enum Mode {
+	V_DEFAULT = 0,
+	V_FRONT = 1,
+	V_SIDE = 2,
+	V_TOP = 3
+};
 
 
 class CSketchPadView : public CView
 {
 private:
-	std::vector<Graphic*> m_graphics;
+	std::vector<Graphic*> m_graphics; // 二维图形
+	HGLRC m_hGLRC;
+	BOOL m_isGLInit;
+	Mode m_view;
+	std::vector<TGraphic*> tGraphics; //三维图形
+
 	void DrawCayleyTree(CDC* pDC, int x, int y, double length, double angle, int depth);
 
 	void DrawKockCurve(CDC* pDC, int x1, int y1, int x2, int y2, int depth);
 	void DrawKockSnowflake(CDC* pDC, int x, int y, int size, int depth);
+	void InitOpenGL();
+	void OnDestroy();
+	void ChangeView(Mode mode);
 protected: // 仅从序列化创建
 	CSketchPadView() noexcept;
 	DECLARE_DYNCREATE(CSketchPadView)
@@ -68,6 +88,7 @@ public:
 public:
 	virtual void OnDraw(CDC* pDC);  // 重写以绘制该视图
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual BOOL CSketchPadView::OnCreate(LPCREATESTRUCT lpCreateStruct);
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
@@ -124,6 +145,7 @@ public:
 	afx_msg void OnFillByRed();
 	afx_msg void OnFillByGreen();
 	afx_msg void OnFillByBlue();
+	afx_msg void OnThreedAxis();
 };
 
 #ifndef _DEBUG  // SketchPadView.cpp 中的调试版本
