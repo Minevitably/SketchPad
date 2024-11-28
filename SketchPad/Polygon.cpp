@@ -5,10 +5,12 @@ namespace MyGraphics {
 	// 构造函数
 	Polygon::Polygon(std::vector<CPoint> points) {
 		this->m_points = points;
+		this->m_fillColor = RGB(255, 255, 255);
 	}
 
 	// 绘制多边形的函数
 	void Polygon::Draw(CDC* pDC) const {
+
 		if (m_points.size() < 2) {
 			// 顶点不足，无法绘制
 			return;
@@ -22,6 +24,10 @@ namespace MyGraphics {
 			// 调用 MFC 提供的直线绘制函数
 			pDC->MoveTo(start);
 			pDC->LineTo(end);
+		}
+		if (m_fillColor != RGB(255, 255, 255)) {
+			// 使用扫描线填充多边形
+			ScanLineFill(pDC);
 		}
 	}
 
@@ -89,6 +95,10 @@ namespace MyGraphics {
 		m_points = input;
 	}
 
+	void Polygon::SetFillColor(COLORREF fillColor) {
+		this->m_fillColor = fillColor;
+	}
+
 	// 判断点是否在指定边界内
 	bool Polygon::IsInside(const CPoint& p, const CRect& rect, int edge) {
 		switch (edge) {
@@ -124,5 +134,55 @@ namespace MyGraphics {
 		}
 
 		return CPoint(static_cast<int>(x + 0.5), static_cast<int>(y + 0.5)); // 四舍五入取整
+	}
+
+
+
+	// 扫描线填充多边形
+	void Polygon::ScanLineFill(CDC* pDC) const {
+		// 1. 找到多边形的 y 范围
+		int minY = INT_MAX, maxY = INT_MIN;
+		for (const auto& pt : m_points) {
+			minY = min(minY, pt.y);
+			maxY = max(maxY, pt.y);
+		}
+
+		// 2. 遍历每一条扫描线
+		for (int y = minY; y <= maxY; ++y) {
+			std::vector<int> intersections;
+
+			// 计算当前扫描线与多边形每条边的交点
+			for (size_t i = 0; i < m_points.size(); ++i) {
+				CPoint p1 = m_points[i];
+				CPoint p2 = m_points[(i + 1) % m_points.size()];
+
+				// 确保 p1.y <= p2.y
+				if (p1.y > p2.y) {
+					std::swap(p1, p2);
+				}
+
+				// 判断扫描线是否与边相交
+				if (y >= p1.y && y < p2.y) {
+					// 计算交点的 x 坐标
+					int x = p1.x + (y - p1.y) * (p2.x - p1.x) / (p2.y - p1.y);
+					intersections.push_back(x);
+				}
+			}
+
+			// 对交点按照 x 坐标排序
+			std::sort(intersections.begin(), intersections.end());
+
+			// 3. 填充交点之间的区域
+			for (size_t i = 0; i < intersections.size(); i += 2) {
+				if (i + 1 < intersections.size()) {
+					int xStart = intersections[i];
+					int xEnd = intersections[i + 1];
+
+					for (int x = xStart; x <= xEnd; ++x) {
+						pDC->SetPixel(x, y, m_fillColor); // 填充颜色
+					}
+				}
+			}
+		}
 	}
 }

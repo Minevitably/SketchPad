@@ -1,5 +1,10 @@
 #pragma once
 #include "Graphic.h"
+#include <algorithm>
+
+using std::max;
+using std::min;
+
 namespace MyGraphics {
 	class Polygon : public Graphic {
 	public:
@@ -11,11 +16,16 @@ namespace MyGraphics {
 		void Draw(CDC* pDC, COLORREF color) const;
 		void Clip(const CRect& clipRect);
 
+		void SetFillColor(COLORREF fillColor);
+
 	private:
 		std::vector<CPoint> m_points; // 存储点的集合
+		COLORREF m_fillColor;
 		// 判断点是否在指定边界内
 		static bool IsInside(const CPoint& p, const CRect& rect, int edge);
 		// 计算边界与多边形边的交点
 		static CPoint ComputeIntersection(const CPoint& p1, const CPoint& p2, const CRect& rect, int edge);
+
+		void Polygon::ScanLineFill(CDC* pDC) const;
 	};
 }

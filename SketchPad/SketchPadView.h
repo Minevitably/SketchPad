@@ -25,6 +25,9 @@
 #include "Polygon.h"
 #include <afxwin.h>
 
+#define M_PI 3.1415926
+
+
 // 定义裁剪窗口的边界
 const int LEFT = 100;
 const int RIGHT = 300;
@@ -46,7 +49,10 @@ class CSketchPadView : public CView
 {
 private:
 	std::vector<Graphic*> m_graphics;
+	void DrawCayleyTree(CDC* pDC, int x, int y, double length, double angle, int depth);
 
+	void DrawKockCurve(CDC* pDC, int x1, int y1, int x2, int y2, int depth);
+	void DrawKockSnowflake(CDC* pDC, int x, int y, int size, int depth);
 protected: // 仅从序列化创建
 	CSketchPadView() noexcept;
 	DECLARE_DYNCREATE(CSketchPadView)
@@ -115,6 +121,9 @@ public:
 	afx_msg void OnTransHexagon();
 	// 删除变换后的图形
 	void RemoveNewHexagon();
+	afx_msg void OnFillByRed();
+	afx_msg void OnFillByGreen();
+	afx_msg void OnFillByBlue();
 };
 
 #ifndef _DEBUG  // SketchPadView.cpp 中的调试版本

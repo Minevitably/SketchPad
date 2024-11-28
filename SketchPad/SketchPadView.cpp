@@ -56,9 +56,13 @@ BEGIN_MESSAGE_MAP(CSketchPadView, CView)
 	ON_COMMAND(ID_THREED_SHOW_SIDEVIEW, &CSketchPadView::OnThreedShowSideview)
 	ON_COMMAND(ID_THREED_SHOW_TOPVIEW, &CSketchPadView::OnThreedShowTopview)
 	ON_COMMAND(ID_FRACTAL_CAYLEY_TREE, &CSketchPadView::OnFractalCayleyTree)
-	ON_COMMAND(ID_FRACTAL_DRAGON_CURVE, &CSketchPadView::OnFractalDragonCurve)
+
 	ON_COMMAND(ID_FRACTAL_KOCK_CURVE, &CSketchPadView::OnFractalKockCurve)
 	ON_COMMAND(ID_TRANS_HEXAGON, &CSketchPadView::OnTransHexagon)
+
+	ON_COMMAND(ID_FILL_BY_RED, &CSketchPadView::OnFillByRed)
+	ON_COMMAND(ID_FILL_BY_GREEN, &CSketchPadView::OnFillByGreen)
+	ON_COMMAND(ID_FILL_BY_BLUE, &CSketchPadView::OnFillByBlue)
 END_MESSAGE_MAP()
 
 // CSketchPadView 构造/析构
@@ -561,8 +565,6 @@ void CSketchPadView::OnCurveCubicBezierSplice()
 	// 更新画板
 	Invalidate();
 }
-
-
 // 计算点的区域编码
 int ComputeOutCode(int x, int y) {
 	int code = INSIDE;
@@ -578,7 +580,6 @@ int ComputeOutCode(int x, int y) {
 
 	return code;
 }
-
 // Cohen-Sutherland 裁剪算法
 bool CohenSutherlandLineClip(int& x0, int& y0, int& x1, int& y1) {
 	int outCode0 = ComputeOutCode(x0, y0);
@@ -634,7 +635,6 @@ bool CohenSutherlandLineClip(int& x0, int& y0, int& x1, int& y1) {
 
 	return accept;
 }
-
 // 在视图中添加命令处理程序
 void CSketchPadView::OnClipLine()
 {
@@ -709,7 +709,70 @@ void CSketchPadView::OnClipPolygon() {
 void CSketchPadView::OnFillByColor()
 {
 	// TODO: 在此添加命令处理程序代码
+		// 定义原始多边形
+	std::vector<CPoint> points = {
+		CPoint(50, 50),
+		CPoint(250, 50),
+		CPoint(250,200),
+		CPoint(180, 250),
+		CPoint(50, 200)
+	};
+	MyGraphics::Polygon* polygon = new MyGraphics::Polygon(points);
+	m_graphics.push_back(polygon);
+	polygon->SetFillColor(RGB(255, 255, 0));
+	Invalidate();
 }
+
+
+
+void CSketchPadView::OnFillByRed()
+{
+	// TODO: 在此添加命令处理程序代码
+	for (int i = 0; i < m_graphics.size(); ) { // 注意这里的 i 不自增
+		Graphic* pGraphic = m_graphics[i];
+
+		// 使用 dynamic_cast 进行类型检查
+		if (MyGraphics::Polygon* polygon = dynamic_cast<MyGraphics::Polygon*>(pGraphic)) {
+			polygon->SetFillColor(RGB(255, 0, 0));
+		}
+		i++; // 仅在未移除元素时自增 i
+	}
+	Invalidate();
+}
+
+
+void CSketchPadView::OnFillByGreen()
+{
+	for (int i = 0; i < m_graphics.size(); ) { // 注意这里的 i 不自增
+		Graphic* pGraphic = m_graphics[i];
+
+		// 使用 dynamic_cast 进行类型检查
+		if (MyGraphics::Polygon* polygon = dynamic_cast<MyGraphics::Polygon*>(pGraphic)) {
+			polygon->SetFillColor(RGB(0, 255, 0));
+		}
+		i++; // 仅在未移除元素时自增 i
+	}
+	Invalidate();
+
+}
+
+
+void CSketchPadView::OnFillByBlue()
+{
+	for (int i = 0; i < m_graphics.size(); ) { // 注意这里的 i 不自增
+		Graphic* pGraphic = m_graphics[i];
+
+		// 使用 dynamic_cast 进行类型检查
+		if (MyGraphics::Polygon* polygon = dynamic_cast<MyGraphics::Polygon*>(pGraphic)) {
+			polygon->SetFillColor(RGB(0, 0, 255));
+		}
+		i++; // 仅在未移除元素时自增 i
+	}
+	Invalidate();
+
+}
+
+
 // 设计三维球体
 void CSketchPadView::OnThreedDesignSphere()
 {
@@ -735,24 +798,92 @@ void CSketchPadView::OnThreedShowTopview()
 {
 	// TODO: 在此添加命令处理程序代码
 }
-// 绘制Cayley树
-void CSketchPadView::OnFractalCayleyTree()
-{
-	// TODO: 在此添加命令处理程序代码
-}
-// 绘制龙状曲线
-void CSketchPadView::OnFractalDragonCurve()
-{
-	// TODO: 在此添加命令处理程序代码
 
-}
-// 绘制Kock雪花曲线
-void CSketchPadView::OnFractalKockCurve()
-{
-	// TODO: 在此添加命令处理程序代码
+void CSketchPadView::OnFractalCayleyTree() {
+	CClientDC dc(this);
 
+	// 定义分形树的初始参数
+	int startX = 400;      // 树的根节点 X 坐标
+	int startY = 600;      // 树的根节点 Y 坐标
+	double initialLength = 150; // 初始树干长度
+	double initialAngle = -90;  // 初始角度（竖直向上）
+	int maxDepth = 10;     // 分形深度
+
+	// 绘制分形树
+	DrawCayleyTree(&dc, startX, startY, initialLength, initialAngle, maxDepth);
 }
 
+void CSketchPadView::DrawCayleyTree(CDC* pDC, int x, int y, double length, double angle, int depth) {
+	// 终止条件：分支深度为 0 或长度过小
+	if (depth <= 0 || length < 2) {
+		return;
+	}
+
+	// 计算分支的终点坐标
+	int xEnd = static_cast<int>(x + length * cos(angle * M_PI / 180));
+	int yEnd = static_cast<int>(y + length * sin(angle * M_PI / 180));
+
+	// 绘制当前分支
+	pDC->MoveTo(x, y);
+	pDC->LineTo(xEnd, yEnd);
+
+	// 递归绘制左右子树
+	double branchAngle = 30;   // 子分支角度
+	double branchScale = 0.7;  // 子分支长度比例
+
+	DrawCayleyTree(pDC, xEnd, yEnd, length * branchScale, angle - branchAngle, depth - 1); // 左分支
+	DrawCayleyTree(pDC, xEnd, yEnd, length * branchScale, angle + branchAngle, depth - 1); // 右分支
+}
 
 
+void CSketchPadView::OnFractalKockCurve() {
+	CClientDC dc(this);
 
+	// 设置正三角形的初始参数
+	int size = 300;  // 初始边长
+	int depth = 4;   // 递归深度
+	int startX = 400; // 起始点X
+	int startY = 400; // 起始点Y
+
+	// 绘制科赫雪花曲线
+	DrawKockSnowflake(&dc, startX, startY, size, depth);
+}
+
+// 绘制科赫雪花
+void CSketchPadView::DrawKockSnowflake(CDC* pDC, int x, int y, int size, int depth) {
+	// 计算正三角形的 3 个顶点
+	int x1 = x, y1 = y;
+	int x2 = x + size, y2 = y;
+	int x3 = x + size / 2, y3 = y - static_cast<int>(size * sqrt(3) / 2);
+
+	// 绘制三个边
+	DrawKockCurve(pDC, x1, y1, x2, y2, depth);  // 底边
+	DrawKockCurve(pDC, x2, y2, x3, y3, depth);  // 右边
+	DrawKockCurve(pDC, x3, y3, x1, y1, depth);  // 左边
+}
+
+// 递归绘制科赫曲线
+void CSketchPadView::DrawKockCurve(CDC* pDC, int x1, int y1, int x2, int y2, int depth) {
+	if (depth == 0) {
+		pDC->MoveTo(x1, y1);
+		pDC->LineTo(x2, y2);
+		return;
+	}
+
+	// 计算 3 个新点
+	int x3 = static_cast<int>((2 * x1 + x2) / 3.0);
+	int y3 = static_cast<int>((2 * y1 + y2) / 3.0);
+
+	int x4 = static_cast<int>((x1 + 2 * x2) / 3.0);
+	int y4 = static_cast<int>((y1 + 2 * y2) / 3.0);
+
+	// 计算新三角形的顶点
+	int x5 = static_cast<int>(x3 + (x4 - x3) * cos(M_PI / 3) - (y4 - y3) * sin(M_PI / 3));
+	int y5 = static_cast<int>(y3 + (x4 - x3) * sin(M_PI / 3) + (y4 - y3) * cos(M_PI / 3));
+
+	// 递归绘制四个边
+	DrawKockCurve(pDC, x1, y1, x3, y3, depth - 1);  // 第1个小边
+	DrawKockCurve(pDC, x3, y3, x5, y5, depth - 1);  // 第2个小边
+	DrawKockCurve(pDC, x5, y5, x4, y4, depth - 1);  // 第3个小边
+	DrawKockCurve(pDC, x4, y4, x2, y2, depth - 1);  // 第4个小边
+}
